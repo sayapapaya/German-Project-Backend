@@ -1,5 +1,4 @@
 
-
 import numpy as np
 from textblob_de import TextBlobDE as TextBlob
 from textblob_de import PatternParser
@@ -39,23 +38,38 @@ def get_relative_frequency_of_pos_tags(blob):
     relative_frequency_of_each_tag = {k : v / number_of_tags for k, v in number_of_each_tag.items()}
     return relative_frequency_of_each_tag
 
-def get_avg_number_of_tag_per_sentence(blob, tag_string):
+def get_avg_number_of_tags_in_tag_set_per_sentence(blob, tag_string_set):
     """
-    Returns average number of occurences of a given tag per sentence in a blob object
+    Returns average number of occurences of words with tags that exist in 
+    the tag_string_set per sentence in a blob object. 
+
+    For example,
+    sentence = "John ate the apple."
+    tag_string_set = set("NN", "NNP")
+    number of occurences of words in the sentence that have tags in the
+        tag_string_set are two ("John" and "apple")
+
     blob -- a blob object
-    tag_string -- a string specifying the Penn Treebank POS tag
+    tag_string -- a set of strings, each string specifying the Penn Treebank POS tag
 
     """
+
     sentences = blob.sentences
     number_of_nouns_per_sentence = []
     for s in sentences:
-        tags = s.tags
-        number_nouns = len([t for t in tags if t[1] == tag_string])
+        number_nouns = len([t for t in s.tags if t[1] in tag_string_set])
         number_of_nouns_per_sentence.append(number_nouns)
 
     avg_number_nouns_per_sentence = np.mean(np.array(number_of_nouns_per_sentence))
     return avg_number_nouns_per_sentence
 
+def get_avg_number_of_nouns_per_sentence(blob):
+    noun_tags = set(["NN", "NNS", "NNP", "NNPS"])
+    return get_avg_number_of_tags_in_tag_set_per_sentence(blob, noun_tags)
+
+def get_avg_number_of_verbs_per_sentence(blob):
+    verb_tags = set(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
+    return get_avg_number_of_tags_in_tag_set_per_sentence(blob, verb_tags)
 
 
 
