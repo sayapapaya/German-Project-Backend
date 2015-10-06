@@ -48,7 +48,7 @@ def get_avg_number_of_tag_per_sentence(blob, tag_string):
     """
     sentences = blob.sentences
     number_of_nouns_per_sentence = []
-    for s in sentences[0:5]:
+    for s in sentences:
         tags = s.tags
         number_nouns = len([t for t in tags if t[1] == tag_string])
         number_of_nouns_per_sentence.append(number_nouns)
