@@ -39,6 +39,12 @@ def get_relative_frequency_of_pos_tags(blob):
     return relative_frequency_of_each_tag
 
 def get_avg_number_of_tags_in_tag_set_per_sentence(blob, tag_string_set):
+    """ TODO:
+    -- Katrine rewrite to take function / be cleaner code
+
+    """
+
+
     """
     Returns average number of occurences of words with tags that exist in 
     the tag_string_set per sentence in a blob object. 
@@ -71,6 +77,52 @@ def get_avg_number_of_verbs_per_sentence(blob):
     verb_tags = set(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
     return get_avg_number_of_tags_in_tag_set_per_sentence(blob, verb_tags)
 
+
+def count_words_that_meet_criteria(blob, criteria_function):
+    """
+    Saya implements
+    & also implements ratio of past tense among verbs,
+
+    """
+
+    pass
+
+def count_sentences_that_meet_criteria(blob, criteria_function):
+    """
+    Katrine implements
+    & criteria_function that 
+
+    """
+    sentences = blob.sentences
+    count = len([s for s in sentences if criteria_function(s)])
+    return count
+
+
+def if_sentence_contains_past_participle(sentence):
+    
+    """
+    Katrine TODO
+    """
+    words = sentence.words
+    pass
+
+def get_number_unique_lemmas(blob):
+    """
+    Saya TODO
+
+    """
+
+def get_length_of_longest_sentence(blob):
+    """
+    Katrine TODO
+    
+    """
+
+def get_length_of_article(blob):
+    """
+
+    """
+    return len(blob.words)
 
 
 # For more on POS tags: https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html 
