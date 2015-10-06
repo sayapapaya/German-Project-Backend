@@ -5,7 +5,10 @@ from textblob_de import PatternParser
 from textblob_de.lemmatizers import PatternParserLemmatizer
 import nltk
 
-from pattern.de import gender, MALE, FEMALE, NEUTRAL, parse, split
+<<<<<<< HEAD
+from pattern.de import gender, MALE, FEMALE, NEUTRAL,parse,split
+from pattern.de import conjugate, SUBJUNCTIVE, PRESENT,INFINITIVE,SG,PAST,PL
+
 
 
 # read text and create blob object
@@ -136,4 +139,35 @@ def get_length_of_article(blob):
 # _lemmatizer = PatternParserLemmatizer()
 # _lemmatizer.lemmatize(article)
 
-
+#helper function for finding subjunctive conjugation
+#pass in a verb and check if it is subjunctive
+def check_if_subjunctive(word):
+    _lemmatizer = PatternParserLemmatizer()
+    lemma =  _lemmatizer.lemmatize(word)[0][0]
+    if conjugate(lemma, PRESENT, 1, SG, mood=SUBJUNCTIVE) == word:
+        return True
+    elif conjugate(lemma, PRESENT, 2, SG, mood=SUBJUNCTIVE) == word:
+        return True
+    elif conjugate(lemma, PRESENT, 3, SG, mood=SUBJUNCTIVE) == word:
+        return True
+    elif conjugate(lemma, PRESENT, 1, PL, mood=SUBJUNCTIVE) == word:
+        return True
+    elif conjugate(lemma, PRESENT, 2, PL, mood=SUBJUNCTIVE) == word:
+        return True
+    elif conjugate(lemma, PRESENT, 3, PL, mood=SUBJUNCTIVE) == word:
+        return True
+    elif conjugate(lemma, PAST, 1, SG, mood=SUBJUNCTIVE) == word:
+        return True
+    elif conjugate(lemma, PAST, 2, SG, mood=SUBJUNCTIVE) == word:
+        return True
+    elif conjugate(lemma, PAST, 3, SG, mood=SUBJUNCTIVE) == word:
+        return True
+    elif conjugate(lemma, PAST, 1, PL, mood=SUBJUNCTIVE) == word:
+        return True
+    elif conjugate(lemma, PAST, 2, PL, mood=SUBJUNCTIVE) == word:
+        return True
+    elif conjugate(lemma, PAST, 3, PL, mood=SUBJUNCTIVE) == word:
+        return True
+    else:
+        return False
+    
