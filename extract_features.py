@@ -11,12 +11,23 @@ from pattern.de import conjugate, SUBJUNCTIVE, PRESENT,INFINITIVE,SG,PAST,PL
 
 
 # read text and create blob object
-file_name = "Articles/Aschenputtel"
 def get_blob(file_path):
     f = open(file_path)
     article = f.read().decode('utf-8')
     blob = TextBlob(article, parser=PatternParser(pprint=True, lemmata=True))
     return blob
+
+def get_length_of_article(blob):
+    """Returns number of words in Blob object"""
+    return len(blob.words)
+
+
+def get_length_of_longest_sentence(blob):
+    """Returns the number of words in the longest sentence in the Blob."""
+    sentence_lengths = [len(s.words) for s in blob.sentences]
+    return max(sentence_lengths)
+
+
 
 # extract average number of words per sentence
 def get_avg_sentence_length(blob):
@@ -30,15 +41,8 @@ def get_avg_word_length(blob):
     average_word_length = np.mean(np.array([len(word) for word in words]))
     return average_word_length
 
-def get_length_of_longest_sentence(blob):
-    """Returns the number of words in the longest sentence in the Blob."""
-    sentence_lengths = [len(s.words) for s in blob.sentences]
-    return max(sentence_lengths)
 
 
-def get_length_of_article(blob):
-    """Returns number of words in Blob object"""
-    return len(blob.words)
 
 
 # count number of words with each part of speech tag
@@ -50,7 +54,6 @@ def get_relative_frequency_of_pos_tags(blob):
     number_of_each_tag = {pos: sum([1 for t in tags if t[1] == pos]) for pos in unique_tags}
     relative_frequency_of_each_tag = {k : v / number_of_tags for k, v in number_of_each_tag.items()}
     return relative_frequency_of_each_tag
-
 
 
 
@@ -108,13 +111,17 @@ def get_avg_number_of_nouns_per_sentence(blob):
 
     return number_nouns_in_blob / number_sentences_in_blob
 
-def get_avg_number_of_verbs_per_sentence(blob):
+# def get_avg_number_of_verbs_per_sentence(blob):
+#     number_verbs_in_blob = count_words_in_blob_if_tag_meets_criteria(
+#         blob, is_verb)
+#     number_sentences_in_blob = float(len(blob.sentences))
+
+#     return number_verbs_in_blob / number_sentences_in_blob    
+
+def get_propotion_of_verbs_among_all_words(blob):
     number_verbs_in_blob = count_words_in_blob_if_tag_meets_criteria(
         blob, is_verb)
-    number_sentences_in_blob = float(len(blob.sentences))
-
-    return number_verbs_in_blob / number_sentences_in_blob    
-    
+    return float(number_verbs_in_blob) / len(blob.words)
 
 def count_sentences_that_contain_past_participle(blob):
     return count_sentences_that_meet_criteria(blob, if_sentence_contains_past_participle)
@@ -123,11 +130,22 @@ def count_sentences_that_contain_past_participle(blob):
 def get_number_unique_lemmas(blob):
     
     """
-    Saya TODO
-
     """
+    lemmas = blob.words.lemmatize()
+    return len(set(lemmas))
+
+def get_frequency_class_attribute(blob):
+    """
+    TODO: Use Saya's code for summer
+    & modify to only look up frequency class of lemma
+    """
+    pass
 
 
+def get_reflexive_count(blob):
+    """TODO
+    """
+    pass
 
 
 # For more on POS tags: https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html 
