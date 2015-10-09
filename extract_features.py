@@ -123,9 +123,8 @@ def proportion_of_sentences_that_contain_past_participle(blob):
     count = count_sentences_that_meet_criteria(blob, if_sentence_contains_past_participle)
     return float(count) / len(blob.sentences)
 
+
 def get_proportion_of_unique_lemmas(blob):
-    """
-    """
     lemmas = blob.words.lemmatize()
     return len(set(lemmas)) / float(len(blob.words))
 
@@ -204,6 +203,50 @@ class POS_tags:
     past_participle_tag = "VBN"
 
 
+#making lookup table for word frequency class
 
+def make_frequency_dict(path):
+    filepath = path#'germanWordList_03.csv'
+    wordDict = {}
+    f = open(filepath,'r')
+    for line in f:
+        split =  line.split(",")
+        word = (split[0]).lower()
+        temp = float(split[1])
+        if word in wordDict:
+            val = float(wordDict[word])
+            if val >0:
+                num = (temp*val)/(val+temp)
+            else:
+                num = temp
+        else:
+            num = temp
+        wordDict[word]= num
+    return wordDict
+
+    
+## scoring based on frequency class
+
+def get_frequency_class_score_of_lemmas(blob):
+    frequencies = make_frequency_dict('germanWordList_03.csv')
+    lemmas = blob.words.lemmatize()
+    totalFrequency = 0.0
+    for lemma in lemmas:
+        totalFrequency += frequencies[lemma.lower()]
+        
+    return float(totalFrequency/len(lemmas))
+
+def get_frequency_class_score_unique_lemmas(blob):
+    lemmaList = {}
+    frequencies =  make_frequency_dict('germanWordList_03.csv')
+    lemmas = blob.words.lemmatize()
+    totalFrequency = 0.0
+    numWords = 0
+    for lemma in lemmas:
+        if lemma.lower() not in lemmaList:
+            lemmaList[lemma.lower()]
+            totalFrequency += frequencies[lemma.lower()]
+            numWords +=1
+    return float(totalFrequency/numWords)
 
     
