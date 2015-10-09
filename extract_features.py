@@ -5,7 +5,6 @@ from textblob_de import PatternParser
 from textblob_de.lemmatizers import PatternParserLemmatizer
 import nltk
 
-<<<<<<< HEAD
 from pattern.de import gender, MALE, FEMALE, NEUTRAL,parse,split
 from pattern.de import conjugate, SUBJUNCTIVE, PRESENT,INFINITIVE,SG,PAST,PL
 
@@ -73,6 +72,8 @@ def get_avg_number_of_tags_in_tag_set_per_sentence(blob, tag_string_set):
     return avg_number_nouns_per_sentence
 
 def get_avg_number_of_nouns_per_sentence(blob):
+    ## TODO:  Create POS tag class where e.g. noun tags can be
+    # accessed as an attribute, so it is not hard coded here
     noun_tags = set(["NN", "NNS", "NNP", "NNPS"])
     return get_avg_number_of_tags_in_tag_set_per_sentence(blob, noun_tags)
 
@@ -91,23 +92,28 @@ def count_words_that_meet_criteria(blob, criteria_function):
     pass
 
 def count_sentences_that_meet_criteria(blob, criteria_function):
-    """
-    Katrine implements
-    & criteria_function that 
+    """Counts number of sentences in a blob that meets a criteria.
 
+    blob - a Blob object
+    criteria_function - a function that takes a Sentence object
+        and returns True if the Sentence meets a criteria
     """
-    sentences = blob.sentences
-    count = len([s for s in sentences if criteria_function(s)])
+    
+    count = len([s for s in blob.sentences if criteria_function(s)])
     return count
 
 
 def if_sentence_contains_past_participle(sentence):
-    
+    """Returns True if the sentence contains a word that is a 
+    past participle verb 
+
+    sentence - a Sentence object
     """
-    Katrine TODO
-    """
-    words = sentence.words
-    pass
+
+    past_participle_tag = "VBN"
+    tags = [word_tag[1] for word_tag in sentence.pos_tags]
+    result = True if past_participle_tag in tags else False
+    return result
 
 def get_number_unique_lemmas(blob):
     """
@@ -116,15 +122,13 @@ def get_number_unique_lemmas(blob):
     """
 
 def get_length_of_longest_sentence(blob):
-    """
-    Katrine TODO
-    
-    """
+    """Returns the number of words in the longest sentence in the Blob."""
+    sentence_lengths = [len(s.words) for s in blob.sentences]
+    return max(sentence_lengths)
+
 
 def get_length_of_article(blob):
-    """
-
-    """
+    """Returns number of words in Blob object"""
     return len(blob.words)
 
 
