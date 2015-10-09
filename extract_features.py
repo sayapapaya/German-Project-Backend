@@ -43,8 +43,6 @@ def get_avg_word_length(blob):
 
 
 
-
-
 # count number of words with each part of speech tag
 # uses only Penn Treebank tags
 def get_relative_frequency_of_pos_tags(blob):
@@ -104,12 +102,10 @@ def if_sentence_contains_past_participle(sentence):
 
 #############################################
 
-def get_avg_number_of_nouns_per_sentence(blob):
+def get_relative_frequency_of_nouns(blob):
     number_nouns_in_blob = count_words_in_blob_if_tag_meets_criteria(
         blob, is_noun)
-    number_sentences_in_blob = float(len(blob.sentences))
-
-    return number_nouns_in_blob / number_sentences_in_blob
+    return float(number_nouns_in_blob) / len(blob.words)
 
 # def get_avg_number_of_verbs_per_sentence(blob):
 #     number_verbs_in_blob = count_words_in_blob_if_tag_meets_criteria(
@@ -118,21 +114,19 @@ def get_avg_number_of_nouns_per_sentence(blob):
 
 #     return number_verbs_in_blob / number_sentences_in_blob    
 
-def get_propotion_of_verbs_among_all_words(blob):
+def get_relative_frequency_of_verbs(blob):
     number_verbs_in_blob = count_words_in_blob_if_tag_meets_criteria(
         blob, is_verb)
     return float(number_verbs_in_blob) / len(blob.words)
 
-def count_sentences_that_contain_past_participle(blob):
-    return count_sentences_that_meet_criteria(blob, if_sentence_contains_past_participle)
+def proportion_of_sentences_that_contain_past_participle(blob):
+    count = count_sentences_that_meet_criteria(blob, if_sentence_contains_past_participle)
+    return float(count) / len(blob.sentences)
 
 
-def get_number_unique_lemmas(blob):
-    
-    """
-    """
+def get_proportion_of_unique_lemmas(blob):
     lemmas = blob.words.lemmatize()
-    return len(set(lemmas))
+    return len(set(lemmas)) / float(len(blob.words))
 
 
 def get_reflexive_count(blob):
