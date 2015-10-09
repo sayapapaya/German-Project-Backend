@@ -154,7 +154,10 @@ def get_reflexive_count(blob):
 # _lemmatizer = PatternParserLemmatizer()
 # _lemmatizer.lemmatize(article)
 
-#helper function for finding subjunctive conjugation
+
+## All the critera functions
+
+#function for finding subjunctive conjugation
 #pass in a verb and check if it is subjunctive
 def check_if_subjunctive(word):
     _lemmatizer = PatternParserLemmatizer()
@@ -187,10 +190,19 @@ def check_if_subjunctive(word):
         return False
 
 
+def check_if_reflexive(word):
+    
+## check if verb is a particular tag
+
+
+## check
+
+
 class POS_tags:
     noun_tags = set(["NN", "NNS", "NNP", "NNPS"]) 
     verb_tags = set(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
     past_participle_tag = "VBN"
+
 
 
 
