@@ -79,17 +79,13 @@ def count_sentences_that_meet_criteria(blob, criteria_function):
 
 #############################################
 
-def is_noun(tag_string):
-    ## TODO:  Create POS tag class where e.g. noun tags can be
-    # accessed as an attribute, so it is not hard coded here
-    noun_tags = set(["NN", "NNS", "NNP", "NNPS"])
-    result = True if tag_string in noun_tags else False
+def is_noun(tag_string):    
+    result = True if tag_string in POS_tags.noun_tags else False
     return result
 
 
 def is_verb(tag_string):
-    verb_tags = set(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
-    result = True if tag_string in verb_tags else False
+    result = True if tag_string in POS_tags.verb_tags else False
     return result
 
 def if_sentence_contains_past_participle(sentence):
@@ -98,10 +94,8 @@ def if_sentence_contains_past_participle(sentence):
 
     sentence - a Sentence object
     """
-
-    past_participle_tag = "VBN"
     tags = [word_tag[1] for word_tag in sentence.pos_tags]
-    result = True if past_participle_tag in tags else False
+    result = True if POS_tags.past_participle_tag in tags else False
     return result
 
 
@@ -177,4 +171,13 @@ def check_if_subjunctive(word):
         return True
     else:
         return False
+
+
+class POS_tags:
+    noun_tags = set(["NN", "NNS", "NNP", "NNPS"]) 
+    verb_tags = set(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
+    past_participle_tag = "VBN"
+
+
+
     
