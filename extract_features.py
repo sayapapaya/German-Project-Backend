@@ -87,7 +87,10 @@ def get_avg_number_of_verbs_per_sentence(blob):
 # _lemmatizer = PatternParserLemmatizer()
 # _lemmatizer.lemmatize(article)
 
-#helper function for finding subjunctive conjugation
+
+## All the critera functions
+
+#function for finding subjunctive conjugation
 #pass in a verb and check if it is subjunctive
 def check_if_subjunctive(word):
     _lemmatizer = PatternParserLemmatizer()
@@ -118,4 +121,11 @@ def check_if_subjunctive(word):
         return True
     else:
         return False
+
+def check_if_reflexive(word):
+    
+## check if verb is a particular tag
+
+
+## check
     
