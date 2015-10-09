@@ -111,13 +111,17 @@ def get_avg_number_of_nouns_per_sentence(blob):
 
     return number_nouns_in_blob / number_sentences_in_blob
 
-def get_avg_number_of_verbs_per_sentence(blob):
+# def get_avg_number_of_verbs_per_sentence(blob):
+#     number_verbs_in_blob = count_words_in_blob_if_tag_meets_criteria(
+#         blob, is_verb)
+#     number_sentences_in_blob = float(len(blob.sentences))
+
+#     return number_verbs_in_blob / number_sentences_in_blob    
+
+def get_propotion_of_verbs_among_all_words(blob):
     number_verbs_in_blob = count_words_in_blob_if_tag_meets_criteria(
         blob, is_verb)
-    number_sentences_in_blob = float(len(blob.sentences))
-
-    return number_verbs_in_blob / number_sentences_in_blob    
-    
+    return float(number_verbs_in_blob) / len(blob.words)
 
 def count_sentences_that_contain_past_participle(blob):
     return count_sentences_that_meet_criteria(blob, if_sentence_contains_past_participle)
@@ -191,12 +195,12 @@ def check_if_subjunctive(word):
 
 
 def check_if_reflexive(word):
+    pass
     
 ## check if verb is a particular tag
 
 
 ## check
-
 
 class POS_tags:
     noun_tags = set(["NN", "NNS", "NNP", "NNPS"]) 
