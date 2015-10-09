@@ -134,13 +134,6 @@ def get_number_unique_lemmas(blob):
     lemmas = blob.words.lemmatize()
     return len(set(lemmas))
 
-def get_frequency_class_attribute(blob):
-    """
-    TODO: Use Saya's code for summer
-    & modify to only look up frequency class of lemma
-    """
-    pass
-
 
 def get_reflexive_count(blob):
     """TODO
