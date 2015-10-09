@@ -1,6 +1,7 @@
 from extract_features import *
 
 import os
+import scipy
 import matplotlib.pyplot as plt
 
 
@@ -46,9 +47,13 @@ def get_metrics_for_articles(article_directory, article_names, metric_function):
 
 
 
-goethe_directory = "goethe_articles"
-metric_function = get_avg_word_length
+metric_function = get_proportion_of_unique_lemmas
+xlabel = "Proportion of unique lemmas among all words"
 
+ylabel = "Goethe score"
+
+
+goethe_directory = "goethe_articles"
 
 article_scores = get_goethe_article_names_with_scores(goethe_directory)
 article_metrics = get_metrics_for_articles(goethe_directory, 
@@ -59,7 +64,15 @@ article_names = article_scores.keys()
 x = np.array([article_metrics[article_name] for article_name in article_names])
 y = np.array([article_scores[article_name] for article_name in article_names])
 
-plt.scatter(x, y)
+slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x,y)
+title = "r-squared: " + str(r_value**2)
+
+fig = plt.figure()
+ax = fig.add_subplot(1,1,1)
+ax.scatter(x, y)
+ax.set_title(title)
+ax.set_xlabel(xlabel)
+ax.set_ylabel(ylabel)
 
 
 # fig = plt.figure()
