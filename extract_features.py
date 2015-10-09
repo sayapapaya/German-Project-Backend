@@ -121,6 +121,7 @@ def count_sentences_that_contain_past_participle(blob):
 
 
 def get_number_unique_lemmas(blob):
+    
     """
     Saya TODO
 
@@ -177,12 +178,12 @@ def check_if_subjunctive(word):
 
 
 def check_if_reflexive(word):
+    pass
     
 ## check if verb is a particular tag
 
 
 ## check
-
 
 class POS_tags:
     noun_tags = set(["NN", "NNS", "NNP", "NNPS"]) 
@@ -190,6 +191,50 @@ class POS_tags:
     past_participle_tag = "VBN"
 
 
+#making lookup table for word frequency class
 
+def make_frequency_dict(path):
+    filepath = path#'germanWordList_03.csv'
+    wordDict = {}
+    f = open(filepath,'r')
+    for line in f:
+        split =  line.split(",")
+        word = (split[0]).lower()
+        temp = float(split[1])
+        if word in wordDict:
+            val = float(wordDict[word])
+            if val >0:
+                num = (temp*val)/(val+temp)
+            else:
+                num = temp
+        else:
+            num = temp
+        wordDict[word]= num
+    return wordDict
+
+    
+## scoring based on frequency class
+
+def get_frequency_class_score_of_lemmas(blob):
+    frequencies = make_frequency_dict('germanWordList_03.csv')
+    lemmas = blob.words.lemmatize()
+    totalFrequency = 0.0
+    for lemma in lemmas:
+        totalFrequency += frequencies[lemma.lower()]
+        
+    return float(totalFrequency/len(lemmas))
+
+def get_frequency_class_score_unique_lemmas(blob):
+    lemmaList = {}
+    frequencies =  make_frequency_dict('germanWordList_03.csv')
+    lemmas = blob.words.lemmatize()
+    totalFrequency = 0.0
+    numWords = 0
+    for lemma in lemmas:
+        if lemma.lower() not in lemmaList:
+            lemmaList[lemma.lower()]
+            totalFrequency += frequencies[lemma.lower()]
+            numWords +=1
+    return float(totalFrequency/numWords)
 
     
