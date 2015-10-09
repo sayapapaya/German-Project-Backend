@@ -30,6 +30,17 @@ def get_avg_word_length(blob):
     average_word_length = np.mean(np.array([len(word) for word in words]))
     return average_word_length
 
+def get_length_of_longest_sentence(blob):
+    """Returns the number of words in the longest sentence in the Blob."""
+    sentence_lengths = [len(s.words) for s in blob.sentences]
+    return max(sentence_lengths)
+
+
+def get_length_of_article(blob):
+    """Returns number of words in Blob object"""
+    return len(blob.words)
+
+
 # count number of words with each part of speech tag
 # uses only Penn Treebank tags
 def get_relative_frequency_of_pos_tags(blob):
@@ -40,56 +51,20 @@ def get_relative_frequency_of_pos_tags(blob):
     relative_frequency_of_each_tag = {k : v / number_of_tags for k, v in number_of_each_tag.items()}
     return relative_frequency_of_each_tag
 
-def get_avg_number_of_tags_in_tag_set_per_sentence(blob, tag_string_set):
-    """ TODO:
-    -- Katrine rewrite to take function / be cleaner code
-
-    """
 
 
-    """
-    Returns average number of occurences of words with tags that exist in 
-    the tag_string_set per sentence in a blob object. 
 
-    For example,
-    sentence = "John ate the apple."
-    tag_string_set = set("NN", "NNP")
-    number of occurences of words in the sentence that have tags in the
-        tag_string_set are two ("John" and "apple")
-
-    blob -- a blob object
-    tag_string -- a set of strings, each string specifying the Penn Treebank POS tag
-
-    """
-
-    sentences = blob.sentences
-    number_of_nouns_per_sentence = []
-    for s in sentences:
-        number_nouns = len([t for t in s.tags if t[1] in tag_string_set])
-        number_of_nouns_per_sentence.append(number_nouns)
-
-    avg_number_nouns_per_sentence = np.mean(np.array(number_of_nouns_per_sentence))
-    return avg_number_nouns_per_sentence
-
-def get_avg_number_of_nouns_per_sentence(blob):
-    ## TODO:  Create POS tag class where e.g. noun tags can be
-    # accessed as an attribute, so it is not hard coded here
-    noun_tags = set(["NN", "NNS", "NNP", "NNPS"])
-    return get_avg_number_of_tags_in_tag_set_per_sentence(blob, noun_tags)
-
-def get_avg_number_of_verbs_per_sentence(blob):
-    verb_tags = set(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
-    return get_avg_number_of_tags_in_tag_set_per_sentence(blob, verb_tags)
-
-
-def count_words_that_meet_criteria(blob, criteria_function):
+def count_words_in_blob_if_tag_meets_criteria(blob, tag_criteria_function):
     """
     Saya implements
     & also implements ratio of past tense among verbs,
 
     """
+    word_tags_that_meet_critera = [word_tag for word_tag in blob.tags if \
+        tag_criteria_function(word_tag[1])]
 
-    pass
+    return len(word_tags_that_meet_critera)
+
 
 def count_sentences_that_meet_criteria(blob, criteria_function):
     """Counts number of sentences in a blob that meets a criteria.
@@ -98,10 +73,24 @@ def count_sentences_that_meet_criteria(blob, criteria_function):
     criteria_function - a function that takes a Sentence object
         and returns True if the Sentence meets a criteria
     """
-    
+
     count = len([s for s in blob.sentences if criteria_function(s)])
     return count
 
+#############################################
+
+def is_noun(tag_string):
+    ## TODO:  Create POS tag class where e.g. noun tags can be
+    # accessed as an attribute, so it is not hard coded here
+    noun_tags = set(["NN", "NNS", "NNP", "NNPS"])
+    result = True if tag_string in noun_tags else False
+    return result
+
+
+def is_verb(tag_string):
+    verb_tags = set(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
+    result = True if tag_string in verb_tags else False
+    return result
 
 def if_sentence_contains_past_participle(sentence):
     """Returns True if the sentence contains a word that is a 
@@ -115,21 +104,35 @@ def if_sentence_contains_past_participle(sentence):
     result = True if past_participle_tag in tags else False
     return result
 
+
+#############################################
+
+def get_avg_number_of_nouns_per_sentence(blob):
+    number_nouns_in_blob = count_words_in_blob_if_tag_meets_criteria(
+        blob, is_noun)
+    number_sentences_in_blob = float(len(blob.sentences))
+
+    return number_nouns_in_blob / number_sentences_in_blob
+
+def get_avg_number_of_verbs_per_sentence(blob):
+    number_verbs_in_blob = count_words_in_blob_if_tag_meets_criteria(
+        blob, is_verb)
+    number_sentences_in_blob = float(len(blob.sentences))
+
+    return number_verbs_in_blob / number_sentences_in_blob    
+    
+
+def count_sentences_that_contain_past_participle(blob):
+    return count_sentences_that_meet_criteria(blob, if_sentence_contains_past_participle)
+
+
 def get_number_unique_lemmas(blob):
     """
     Saya TODO
 
     """
 
-def get_length_of_longest_sentence(blob):
-    """Returns the number of words in the longest sentence in the Blob."""
-    sentence_lengths = [len(s.words) for s in blob.sentences]
-    return max(sentence_lengths)
 
-
-def get_length_of_article(blob):
-    """Returns number of words in Blob object"""
-    return len(blob.words)
 
 
 # For more on POS tags: https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html 
