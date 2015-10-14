@@ -46,46 +46,36 @@ def get_metrics_for_articles(article_directory, article_names, metric_function):
     return article_metrics
 
 
+def plot():
 
-metric_function = get_proportion_of_unique_lemmas
-xlabel = "Proportion of unique lemmas among all words"
+    metric_function = get_proportion_of_unique_lemmas
+    xlabel = "Proportion of unique lemmas among all words"
 
-ylabel = "Goethe score"
-
-
-goethe_directory = "goethe_articles"
-
-article_scores = get_goethe_article_names_with_scores(goethe_directory)
-article_metrics = get_metrics_for_articles(goethe_directory, 
-                            article_scores.keys(), metric_function)
-article_names = article_scores.keys()
-
-# plot features vs scores in scatter plot
-x = np.array([article_metrics[article_name] for article_name in article_names])
-y = np.array([article_scores[article_name] for article_name in article_names])
-
-slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x,y)
-title = "r-squared: " + str(r_value**2)
-
-fig = plt.figure()
-ax = fig.add_subplot(1,1,1)
-ax.scatter(x, y)
-ax.set_title(title)
-ax.set_xlabel(xlabel)
-ax.set_ylabel(ylabel)
+    ylabel = "Goethe score"
 
 
-# fig = plt.figure()
-# fig.suptitle('bold figure suptitle', fontsize=14, fontweight='bold')
+    goethe_directory = "goethe_articles"
 
-# # ax = fig.add_subplot(111)
-# # fig.subplots_adjust(top=0.85)
-# fig.set_title('axes title')
+    article_scores = get_goethe_article_names_with_scores(goethe_directory)
+    article_metrics = get_metrics_for_articles(goethe_directory, 
+                                article_scores.keys(), metric_function)
+    article_names = article_scores.keys()
 
-# fig.set_xlabel('xlabel')
-# fig.set_ylabel('ylabel')
+    # plot features vs scores in scatter plot
+    x = np.array([article_metrics[article_name] for article_name in article_names])
+    y = np.array([article_scores[article_name] for article_name in article_names])
 
-plt.show()
+    slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x,y)
+    title = "r-squared: " + str(r_value**2)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1,1,1)
+    ax.scatter(x, y)
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+
+    plt.show()
 
 
 
