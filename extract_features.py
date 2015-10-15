@@ -28,7 +28,6 @@ def get_length_of_longest_sentence(blob):
     return max(sentence_lengths)
 
 
-
 # extract average number of words per sentence
 def get_avg_sentence_length(blob):
     sentences = blob.sentences
@@ -46,6 +45,8 @@ def get_avg_word_length(blob):
 # count number of words with each part of speech tag
 # uses only Penn Treebank tags
 def get_relative_frequency_of_pos_tags(blob):
+    """
+    """
     tags = blob.tags
     number_of_tags = float(len(tags))
     unique_tags = set([t[1] for t in tags])
@@ -57,8 +58,6 @@ def get_relative_frequency_of_pos_tags(blob):
 
 def count_words_in_blob_if_tag_meets_criteria(blob, tag_criteria_function):
     """
-    Saya implements
-    & also implements ratio of past tense among verbs,
 
     """
     word_tags_that_meet_critera = [word_tag for word_tag in blob.tags if \
@@ -78,26 +77,6 @@ def count_sentences_that_meet_criteria(blob, criteria_function):
     count = len([s for s in blob.sentences if criteria_function(s)])
     return count
 
-#############################################
-
-def is_noun(tag_string):    
-    result = True if tag_string in POS_tags.noun_tags else False
-    return result
-
-
-def is_verb(tag_string):
-    result = True if tag_string in POS_tags.verb_tags else False
-    return result
-
-def if_sentence_contains_past_participle(sentence):
-    """Returns True if the sentence contains a word that is a 
-    past participle verb 
-
-    sentence - a Sentence object
-    """
-    tags = [word_tag[1] for word_tag in sentence.pos_tags]
-    result = True if POS_tags.past_participle_tag in tags else False
-    return result
 
 
 #############################################
@@ -135,19 +114,30 @@ def get_reflexive_count(blob):
     pass
 
 
-# For more on POS tags: https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html 
-# If used as feature, combine certain dimensions, and make dimensions be .e.g. relative frequency of nouns or verbs etc.? 
-
-# blob.noun_phrases
-# blob.parse()
 
 
-# Lemmatizing entire text or single words below:
-# _lemmatizer = PatternParserLemmatizer()
-# _lemmatizer.lemmatize(article)
+#############################################
+### CRITERIA FUNCTIONS
+#############################################
 
+def is_noun(tag_string):
+    result = True if tag_string in POS_tags.noun_tags else False
+    return result
 
-## All the critera functions
+def is_verb(tag_string):
+    result = True if tag_string in POS_tags.verb_tags else False
+    return result
+
+def if_sentence_contains_past_participle(sentence):
+    """Returns True if the sentence contains a word that is a 
+    past participle verb 
+
+    sentence - a Sentence object
+    """
+    tags = [word_tag[1] for word_tag in sentence.pos_tags]
+    result = True if POS_tags.past_participle_tag in tags else False
+    return result
+
 
 #function for finding subjunctive conjugation
 #pass in a verb and check if it is subjunctive
