@@ -4,13 +4,13 @@ import numpy as np
 ### @param S - score assigned by user for some article {1,2,3,4,5}
 ## @ param case
 
-def K(S,case):
+def K(S, case):
     k = 0
-    if case ==1:
-        if S>3:
-            k =0
-        elif S ==3:
-            k = 0.5
+    if case == 1:
+        if S > 3:
+            k = 0
+        elif S == 3:
+            k = 0.5 
         elif S ==2:
             k = 0.7
         elif S == 1:
@@ -30,47 +30,104 @@ def K(S,case):
 
 
 
-# funciton : getCase is to figure out which direction we want to nudge the user
-def getCase(u,a,S):
-    if u==a:
+def getCase(u, a, S):
+    """Helper function to determine which direction to nudge the user in.
+    
+    u -- user feature value along a specific dimension
+    a -- article feature value along a specific dimension
+    S -- score user gave to article
+
+    returns 0, 1, or 2 to be used in function K(S, case)
+    """
+    if u == a:
         return 0
     elif u > a:
         return 1
     elif u < a:
         return 2
     
-#updates the user in some direction
-def update(u,a,S):
-    k = K(S,getCase)
-    u = u +k*(u-a)
+def update_user_in_one_dimension(u, a, S):
+    """Nudges the user along one dimension given an article score
+
+    u -- current user value along the dimension
+    a -- article value along dimension
+    S -- score given to the article by the user
+
+    returns updated value for user along dimension
+    """
+
+    k = K(S, getCase(u, a, S))
+    u = u + k * (u - a)
     return u
 
-#initializes the user vector (currently by using centroid of all the articles)
-def initialize(articles):
-    numFeatures = articles.shape[1] 
-    numArticles = articles.shape[0]
-    initialModel = np.zeros(numFeatures)
-    for j in range(0,numFeatures):
-        featureScore = np.mean(articles[j][:])
-        initialModel[j] = featureScore
-    return initialModel
 
+def update_user_given_one_article(user, article, S):
+    """
+    user -- numpy feature vector representing user (in same space as article)
+    article -- numpy feature vector representing article
+    S -- score given to the article by the user
+
+    returns updated feature vector for the user
+    """
+
+    # ensure that article is also represented as 1D array, not 1d matrix
+    article = np.reshape(article, user.shape)
+
+    new_user_rep = []
+    for u_i, a_i in zip(user, article):
+        new_user_rep.append(update_user_in_one_dimension(u_i, a_i, S))
+
+    return np.array(new_user_rep)
+
+def update_user_given_many_articles(user, articles, scores):
+    """
+    user -- numpy feature vector representing user (in same space as articles)
+    articles -- numpy matrix where rows are feature vectors representing articles
+    S -- numpy array of scores given to the articles by the user
+
+    returns updated feature vector for the user
+    """
+    for article, S in zip(articles, scores):
+        updated_user = update_user_given_one_article(user, article, S)
+
+    return updated_user
+
+
+
+def get_centroid(articles):
+    """ """
+    article_centroid = np.array(np.mean(articles, axis=0)).flatten()
+    return article_centroid
+
+
+### Test code below before using ###
 
 #param articles is a nxm matrix with m is the number of features n is number of articles
 #param scores is a row vector of scores for each article
-def create_user_model(articles,scores):
-    numFeatures = articles.shape[1] 
-    numArticles = articles.shape[0]
-    userModel = initialize(numFeatures)
-    for i in range(0,numArticles):
-        article = articles[:,i] #row vector corresponding to article features
-        for j in range(0,numFeatures):
-            u = userModel[j]
-            a = article[j]
-            S = scores[j]
-            u_new = update(u,a,S)
-            userModel[j] = u_new
+# def create_user_model(articles,scores):
+#     numFeatures = articles.shape[1] 
+#     numArticles = articles.shape[0]
+#     userModel = initialize(articles)
+#     for i in range(0,numArticles):
+#         article = np.array(articles[i,:]) #row vector corresponding to article features
+#         for j in range(0,numFeatures):
+#             u = userModel[j]
+#             a = article[j]
+#             S = scores[j]
+#             u_new = update(u,a,S)
+
+#             userModel[j] = u_new
     
-    return userModel
-    
-    
+#     return userModel
+
+# Code below seems to find avg value for each vector instead?
+#initializes the user vector (currently by using centroid of all the articles)
+# def initialize(articles):
+    # numFeatures = articles.shape[1] 
+    # numArticles = articles.shape[0]
+    # initialModel = np.zeros(numFeatures)
+    # for j in range(0,numFeatures):
+    #     featureScore = np.mean(articles[j][:])
+    #     initialModel[j] = featureScore
+    # return initialModel
+
