@@ -1,6 +1,7 @@
 
 import extract_features
 import numpy as np
+from sklearn.neighbors import NearestNeighbors
 
 from plot_features_vs_readability import get_goethe_article_names_with_scores
 
@@ -26,6 +27,11 @@ def create_feature_vector(blob):
 
 def create_all_feature_vectors_of_articles(article_directory, article_names):
     """
+    article_directory -- string path to directory containing articles
+    article_names -- list of string names of articles in article directory
+    
+    return numpy array containing feature vectors in same order as
+        articles appear in article_names
     """
     feature_vectors = []
 
@@ -37,16 +43,21 @@ def create_all_feature_vectors_of_articles(article_directory, article_names):
     return np.array(feature_vectors)
 
 
-def get_centroid(articles):
-    """ """
-    article_centroid = np.mean(articles, axis=0)
-    return article_centroid
+def recommend_k_articles(article_names, articles, user, k):
+    """
+    TODO: 
+    - double check documentation for sklearn''s NearestNeighbors and
+        what indices it returns is
 
-git
-
-
-# goethe_directory = "goethe_articles"
-# article_names_with_scores = get_goethe_article_names_with_scores(goethe_directory)
-# goethe_article_names = article_names_with_scores.keys()
-
-# articles = create_all_feature_vectors_of_articles(goethe_directory, goethe_article_names)
+    article_names -- numpy array of article names
+    articles -- numpy matrix where rows are feature vectors representing articles
+    user -- numpy feature vector representing user (in same space as articles)
+    k -- number of articles to recommend
+    """
+    nbrs = NearestNeighbors(n_neighbors=k).fit(articles)
+    distances, indices = nbrs.kneighbors(articles)
+    indices = [x[1] for x in indices][0:k]
+    
+    nearest_articles = article_names[indices]
+    return nearest_articles
+    
