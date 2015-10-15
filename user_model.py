@@ -122,12 +122,12 @@ def get_centroid(articles):
 
 # Code below seems to find avg value for each vector instead?
 #initializes the user vector (currently by using centroid of all the articles)
-# def initialize(articles):
-    # numFeatures = articles.shape[1] 
-    # numArticles = articles.shape[0]
-    # initialModel = np.zeros(numFeatures)
-    # for j in range(0,numFeatures):
-    #     featureScore = np.mean(articles[j][:])
-    #     initialModel[j] = featureScore
-    # return initialModel
+def initialize(articles):
+    numFeatures = articles.shape[1] 
+    numArticles = articles.shape[0]
+    initialModel = np.zeros(numFeatures)
+    for j in range(0,numFeatures):
+        featureScore = np.mean(articles[j][:])
+        initialModel[j] = featureScore
+    return initialModel
 

@@ -1,5 +1,18 @@
+
 import numpy as np
 import user_model
+
+"""
+To run most easily:
+- install Python nose, by
+    "pip install nose"
+
+- in terminal, run command
+    "nosetests test_user_model.py"
+
+- for full docs: 
+    https://nose.readthedocs.org/en/latest/
+"""
 
 
 def test_get_centroid():
