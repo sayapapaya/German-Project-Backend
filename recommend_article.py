@@ -38,7 +38,7 @@ def create_feature_vector_dict(article_directory, article_names):
     return article_name_to_feature_vectors
 
 
-def recommend_k_articles(article_names, articles, user, k):
+def find_k_nearest_articles(article_names, articles, user, k):
     """Finds the k articles closest to the user
 
     article_names -- numpy array of article names
@@ -52,4 +52,6 @@ def recommend_k_articles(article_names, articles, user, k):
     distances, indices = nbrs.kneighbors(user)
     nearest_articles = article_names[indices]
     return nearest_articles
+
+
     
