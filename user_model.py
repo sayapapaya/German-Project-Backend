@@ -79,15 +79,22 @@ def update_user_given_one_article(user, article, S):
 
     return np.array(new_user_rep)
 
-def update_user_given_many_articles(user, articles, scores):
+def update_user_given_many_articles(user_ratings, article_dict, user):
     """
-    user -- numpy feature vector representing user (in same space as articles)
-    articles -- numpy matrix where rows are feature vectors representing articles
+    user_ratings -- dict mapping article names to user scores
+    article_dict -- dict mapping article names to article feature vectors
     S -- numpy array of scores given to the articles by the user
 
     returns updated feature vector for the user
     """
-    for article, S in zip(articles, scores):
+    user_rated_article_names = np.array(user_ratings.keys())
+    user_rated_article_feature_vectors = np.array(
+        [article_dict[article_name] for article_name in user_ratings.keys()])
+
+    scores = np.array([user_ratings[article_name] for article_name in \
+        user_rated_article_names])
+
+    for article, S in zip(user_rated_article_feature_vectors, scores):
         updated_user = update_user_given_one_article(user, article, S)
 
     return updated_user
