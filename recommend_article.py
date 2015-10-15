@@ -44,20 +44,17 @@ def create_all_feature_vectors_of_articles(article_directory, article_names):
 
 
 def recommend_k_articles(article_names, articles, user, k):
-    """
-    TODO: 
-    - double check documentation for sklearn''s NearestNeighbors and
-        what indices it returns is
+    """Finds the k articles closest to the user
 
     article_names -- numpy array of article names
     articles -- numpy matrix where rows are feature vectors representing articles
     user -- numpy feature vector representing user (in same space as articles)
     k -- number of articles to recommend
+    
+    returns the names of the k articles closest to the user
     """
     nbrs = NearestNeighbors(n_neighbors=k).fit(articles)
-    distances, indices = nbrs.kneighbors(articles)
-    indices = [x[1] for x in indices][0:k]
-    
+    distances, indices = nbrs.kneighbors(user)
     nearest_articles = article_names[indices]
     return nearest_articles
     
