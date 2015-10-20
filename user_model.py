@@ -107,6 +107,9 @@ def get_centroid(articles):
     return article_centroid
 
 
+
+############################################################################
+############################################################################
 ### Test code below before using ###
 
 #param articles is a nxm matrix with m is the number of features n is number of articles
