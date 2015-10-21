@@ -1,42 +1,41 @@
-
-import article_model
 import numpy as np
+
 from sklearn.neighbors import NearestNeighbors
 
-from plot_features_vs_readability import get_goethe_article_names_with_scores
 
 
-## TODO: UPDATE TO REFLECT WHICH FEATURES SHOW GOOD CORRELATION
-def create_feature_vector(article_blob):
-    """
-    article_blob -- an instance of the class ArticleBlob
-    """
-    feature_vector = np.array([
-        article_blob.get_length_of_longest_sentence(),
-        article_blob.get_avg_sentence_length(),
-        article_blob.get_avg_word_length(),
-        article_blob.proportion_of_sentences_that_contain_past_participle()
-    ])
-    return feature_vector
+def recommend_k_articles(all_articles, user, k, recommendation_function):
+    """Recommends k articles from all_articles that the user has not yet read
+    applying the recommendation function
+    Note that there must be at least k articles in all_articles that the
+    user has not yet read
 
-def create_feature_vector_dict(article_directory, article_names):
+    all_articles -- a dict of article names to article feature vectors
+    user -- a UserRep instance
+    k -- an int, the number of articles to recommend
+    recommendation_function(user_feature_vector, list_of_article_names, 
+        list_of_corresponding_article_feature_vectors, k) -- returns names
+        of articles to recommend
+
+    Returns names of k recommended articles
     """
-    article_directory -- string path to directory containing articles
-    article_names -- list of string names of articles in article directory
+    read_articles = user.get_read_articles().keys()
+    unread_article_dict = {k:v for k,v in all_articles.items() if k not in read_articles}
+    user_fv = user.get_feature_vector()
+    unread_article_names = np.array(unread_article_dict.keys())
+    unread_article_fvs = np.array([unread_article_dict[n] for n in unread_article_names])
     
-    return dictionary mapping article names to feature vectors
-    """
-    article_name_to_feature_vectors = {}
+    recommended_article_names = recommendation_function(
+        user_fv, unread_article_names, unread_article_fvs, k)
 
-    for article_name in article_names:
-        article_path = "".join([article_directory, "/", article_name])
-        article_blob = article_model.ArticleBlob(article_model.get_blob(article_path)
-        article_name_to_feature_vectors[article_name] = create_feature_vector(article_blob)
-    
-    return article_name_to_feature_vectors
+    return recommended_article_names
 
 
-def find_k_nearest_articles(article_names, articles, user, k):
+############################################################################
+### RECOMMENDATION FUNCTIONS
+############################################################################
+
+def find_k_nearest_articles(user_fv, article_names, article_fvs, k):
     """Finds the k articles closest to the user
 
     article_names -- numpy array of article names
@@ -46,11 +45,11 @@ def find_k_nearest_articles(article_names, articles, user, k):
     
     returns the names of the k articles closest to the user
     """
-    nbrs = NearestNeighbors(n_neighbors=k).fit(articles)
-    distances, indices = nbrs.kneighbors(user)
+    nbrs = NearestNeighbors(n_neighbors=k).fit(article_fvs)
+    distances, indices = nbrs.kneighbors(user_fv)
     nearest_articles = article_names[indices]
     return nearest_articles
-
+    
 
 
     
