@@ -1,6 +1,7 @@
 import numpy as np
 
 from sklearn.neighbors import NearestNeighbors
+from sklearn.neighbors import KNeighborsClassifier
 
 
 
@@ -29,6 +30,16 @@ def recommend_k_articles(all_articles, user, k, recommendation_function):
         user_fv, unread_article_names, unread_article_fvs, k)
 
     return recommended_article_names
+
+
+# def classify_articles_based_on_read(all_articles, user_ratings):
+
+#     neigh = KNeighborsClassifier(n_neighbors=2)
+#     all_article_names = all_articles.keys()
+#     all_article_fvs = np.array([all_articles[n] for n in all_article_names])
+#     article_labels = np.array([user_ratings.get(n, 0) for n in all_article_names])
+#     neigh.fit(all_article_fvs, article_labels)
+#     return neigh
 
 
 ############################################################################
