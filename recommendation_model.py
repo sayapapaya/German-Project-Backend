@@ -32,14 +32,21 @@ def recommend_k_articles(all_articles, user, k, recommendation_function):
     return recommended_article_names
 
 
-# def classify_articles_based_on_read(all_articles, user_ratings):
+def classify_articles_based_on_read_articles(all_articles, user_ratings, k):
+    """TODO: add docs
+    """
 
-#     neigh = KNeighborsClassifier(n_neighbors=2)
-#     all_article_names = all_articles.keys()
-#     all_article_fvs = np.array([all_articles[n] for n in all_article_names])
-#     article_labels = np.array([user_ratings.get(n, 0) for n in all_article_names])
-#     neigh.fit(all_article_fvs, article_labels)
-#     return neigh
+    neigh = KNeighborsClassifier(n_neighbors=k)
+    
+    read_article_names = user_ratings.keys()
+    read_article_fvs = np.array([all_articles[n] for n in read_article_names])
+    article_labels = np.array([user_ratings[n] for n in read_article_names])
+
+    neigh.fit(read_article_fvs, article_labels)
+
+    classified_articles = {k : neigh.predict(v) for k,v in all_articles.items()}
+    
+    return classified_articles
 
 
 ############################################################################
