@@ -73,6 +73,8 @@ class UserRep:
 ### HELPER FUNCTIONS TO UPDATE USER
 #########################################################
 
+
+
 def update_user_given_one_article(user, article, S):
     """
     user -- numpy feature vector representing user (in same space as article)
@@ -87,20 +89,29 @@ def update_user_given_one_article(user, article, S):
 
     new_user_rep = []
     for u_i, a_i in zip(user, article):
-        k = K(S, getCase(u_i, a_i, S))
+        k = old_K_v1(u_i, a_i, S)
         u_i_new = u_i + k * (u_i - a_i)
         new_user_rep.append(u_i_new)
 
     return np.array(new_user_rep)
 
 
-### function: K() is to get a gain as some function of the score
-### @param S - score assigned by user for some article {1,2,3,4,5}
-## @ param case
+def old_K_v1(u_i, a_i, S):
+    """    
+    Get a gain as some function of the score
 
-def K(S, case):
+    u -- user feature value along a specific dimension
+    a -- article feature value along a specific dimension
+    S -- score user gave to article, {1, 2, 3, 4, 5}
+
+    OBSERVATION: this K function, when applied repeatedly, 
+    brings the user out of the space of the articles.
+
+    """
+
+
     k = 0
-    if case == 1:
+    if u_i > a_i:
         if S > 3:
             k = 0
         elif S == 3:
@@ -109,34 +120,16 @@ def K(S, case):
             k = 0.7
         elif S == 1:
             k = 0.9
-    elif case == 2:
-        if S<3:
-            k =0
-        elif S ==3:
+
+    elif u_i < a_i:
+        if S < 3:
+            k = 0
+        elif S == 3:
             k = 0.5
-        elif S ==4:
+        elif S == 4:
             k = 0.7
         elif S == 5:
             k = 0.9
         
-    return k # currently case 2 just returns 0, which means that if a == u
-                #then the model wont change
+    return k
 
-
-
-def getCase(u, a, S):
-    """Helper function to determine which direction to nudge the user in.
-    
-    u -- user feature value along a specific dimension
-    a -- article feature value along a specific dimension
-    S -- score user gave to article
-
-    returns 0, 1, or 2 to be used in function K(S, case)
-    """
-    if u == a:
-        return 0
-    elif u > a:
-        return 1
-    elif u < a:
-        return 2
-    
