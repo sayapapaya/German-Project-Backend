@@ -32,8 +32,14 @@ def recommend_k_articles(all_articles, user, k, recommendation_function):
     return recommended_article_names
 
 
-def classify_articles_based_on_read_articles(all_articles, user_ratings, k):
-    """TODO: add docs
+def knn_classification_based_on_read_articles(all_articles, user_ratings, k):
+    """
+    all_articles -- a dict of article names to article feature vectors
+    user_ratings -- a dict of article names to user ratings
+    k -- the number of neighbors to base the k-nearest-neighbors classification on
+
+    Returns a dictionary of article names to predicted user ratings
+        where existing user ratings of articles override any prediction
     """
 
     neigh = KNeighborsClassifier(n_neighbors=k)
@@ -44,7 +50,8 @@ def classify_articles_based_on_read_articles(all_articles, user_ratings, k):
 
     neigh.fit(read_article_fvs, article_labels)
 
-    classified_articles = {k : neigh.predict(v) for k,v in all_articles.items()}
+    classified_articles = {k : neigh.predict(v)[0] for k,v in all_articles.items()}
+    classified_articles.update(user_ratings)
     
     return classified_articles
 
