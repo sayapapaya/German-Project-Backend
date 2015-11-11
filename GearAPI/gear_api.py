@@ -26,6 +26,12 @@ from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
 
+from google.appengine.ext import vendor
+vendor.add('lib')
+vendor.add('lib/nltk')
+
+import textblob_de
+
 package = 'GearBackend'
 
 class Definition(messages.Message):
@@ -92,7 +98,7 @@ class GearApi(remote.Service):
     DEFINE_RESOURCE = endpoints.ResourceContainer(Definition)#, word=messages.StringField(1, required=True))
     @endpoints.method(DEFINE_RESOURCE, Definition, path='gearapi/multiply',http_method='POST',name='gearapi.define')
     def define(self,request):
-        return Definition(message=request.message+" still needs to be defined by someone who isn't Mike")
+        return Definition(message=request.message+str(textblob_de.TextBlobDE(request.message)))
 """
   MULTIPLY_METHOD_RESOURCE = endpoints.ResourceContainer(
       Greeting,
