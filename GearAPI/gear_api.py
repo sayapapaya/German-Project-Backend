@@ -98,7 +98,9 @@ class GearApi(remote.Service):
     DEFINE_RESOURCE = endpoints.ResourceContainer(Definition)#, word=messages.StringField(1, required=True))
     @endpoints.method(DEFINE_RESOURCE, Definition, path='gearapi/multiply',http_method='POST',name='gearapi.define')
     def define(self,request):
-        return Definition(message=request.message+str(textblob_de.TextBlobDE(request.message)))
+        responseBlob = textblob_de.TextBlobDE(request.message)
+        responseText = str(responseBlob.translate(to="en"))
+        return Definition(message=responseText)
 """
   MULTIPLY_METHOD_RESOURCE = endpoints.ResourceContainer(
       Greeting,
