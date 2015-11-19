@@ -47,6 +47,9 @@ class StoriesCollection(messages.Message):
     """Collection of stories"""
     items = messages.MessageField(RecommendedStory, 1, repeated=True)
 
+class JsonData(messages.Message):
+    """A JSON string containing data to save via email"""
+    message = messages.StringField(1)
 
 
 STORED_STORIES = StoriesCollection(items = [
@@ -71,13 +74,25 @@ class GearApi(remote.Service):
     def stories_list(self, unused_request):
         return STORED_STORIES
 
-    DEFINE_RESOURCE = endpoints.ResourceContainer(Definition)#, word=messages.StringField(1, required=True))
-    @endpoints.method(DEFINE_RESOURCE, Definition, path='gearapi/multiply',http_method='POST',name='gearapi.define')
+    DEFINE_RESOURCE = endpoints.ResourceContainer(Definition)
+    @endpoints.method(DEFINE_RESOURCE, Definition, path='gearapi/define',http_method='POST',name='gearapi.define')
     def define(self,request):
         responseBlob = textblob_de.TextBlobDE(request.message)
         responseText = str(responseBlob.translate(to="en"))
-        email_util.send_data(responseText)
+        email_util.email_data(responseText)
         return Definition(message=responseText)
+
+    JSONDATA_RESOURCE = endpoints.ResourceContainer(JsonData)
+    @endpoints.method(JSONDATA_RESOURCE, JsonData, path='gearapi/json',http_method='POST',name='gearapi.sendJsonData')
+    def send_json_data(self, request):
+        json_string = str(request.message)
+        email_util.email_data(json_string)
+
+        # --> 
+        # do we want to make this return a status of the email instead,
+        # e.g. "Successful email transmission" upon success?
+        return JsonData(message=json_string)
+
 
 
 APPLICATION = endpoints.api_server([GearApi])

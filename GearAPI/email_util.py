@@ -1,7 +1,7 @@
 from google.appengine.api import mail
 
 
-def send_data(message_string):
+def email_data(message_string):
     """Sends a message string via email to our backend email address.
     """
 
