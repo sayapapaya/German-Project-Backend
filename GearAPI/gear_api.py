@@ -8,7 +8,7 @@ FOR PUSHING TO THE SERVER:
 Don't forget to upload your changes to github!
 
 Test Locally!
-dev_appserver.py --port=8080 GoogleAppEngine-Python/
+dev_appserver.py --port=8080 GearAPI/
 In the command prompt:
     appcfg.py update --no_cookies app.yaml
         ^app-directory is the name of our app's directory
@@ -16,7 +16,7 @@ In the command prompt:
     http://backendgear-1121.appspot.com/_ah/api/explorer
 
     Then create a library bundle for android:
-    endpointscfg.py get_client_lib java -bs gradle gear_api.GearBackendApi
+    endpointscfg.py get_client_lib java -bs gradle gear_api.GearApi
 
     Then import this module into android studio and GO
 """
@@ -31,6 +31,7 @@ vendor.add('lib')
 vendor.add('lib/nltk')
 
 import textblob_de
+import email_util
 
 package = 'GearBackend'
 
@@ -100,6 +101,7 @@ class GearApi(remote.Service):
     def define(self,request):
         responseBlob = textblob_de.TextBlobDE(request.message)
         responseText = str(responseBlob.translate(to="en"))
+        email_util.send_data(responseText)
         return Definition(message=responseText)
 """
   MULTIPLY_METHOD_RESOURCE = endpoints.ResourceContainer(
