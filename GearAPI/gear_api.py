@@ -79,7 +79,7 @@ class GearApi(remote.Service):
     def define(self,request):
         responseBlob = textblob_de.TextBlobDE(request.message)
         responseText = str(responseBlob.translate(to="en"))
-        email_util.email_data(responseText)
+        # email_util.email_data(responseText)
         return Definition(message=responseText)
 
     JSONDATA_RESOURCE = endpoints.ResourceContainer(JsonData)
