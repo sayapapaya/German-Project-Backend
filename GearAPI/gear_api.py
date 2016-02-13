@@ -20,24 +20,29 @@ In the command prompt:
 
     Then import this module into android studio and GO
 """
+import json
+import string
 
 import endpoints
 from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
 
+
 from google.appengine.ext import vendor
 
 vendor.add('lib')
 vendor.add('lib/nltk')
 
+import textblob
 import textblob_de
 import email_util
+
 
 # TODO
 # add article directory here as well
 # articles must match up with articles in front-end app
-# vendor.add('articles')
+vendor.add('articles')
 
 
 package = 'GearBackend'
@@ -64,6 +69,10 @@ class Dictionary(messages.Message):
     """A JSON string containing a dictionary of words for the articles"""
     message = messages.StringField(1)
 
+class ArticleName(messages.Message):
+    """Name of an article in both backend and frontend articles directory"""
+    message = messages.StringField(1)
+
 
 STORED_STORIES = StoriesCollection(items = [
     RecommendedStory(message="aschenputtel"),
@@ -87,11 +96,31 @@ class GearApi(remote.Service):
     def stories_list(self, unused_request):
         return STORED_STORIES
 
-    @endpoints.method(message_types.VoidMessage, Dictionary, path='dictionary', http_method='GET', name='stories.getDictionary')
-    def get_dictionary(self, unused_request):
+    ARTICLE_NAME_RESOURCE = endpoints.ResourceContainer(ArticleName)
+    @endpoints.method(ARTICLE_NAME_RESOURCE, Dictionary, path='dictionary', http_method='POST', name='stories.getDictionary')
+    def get_dictionary(self, request):
         # TODO
-        dictionary_json_string = "{'hallo': 'hello'}"
-        return Dictionary(message=dictionary_json_string)
+        article_name = str(request.message)
+
+        dictionary = {}
+        with open('articles/' + article_name, 'r') as f:
+            text = f.read().decode('utf-8')
+            for word_maybe_punctuation in text.split()[0:10]:
+                exclude = set(string.punctuation)
+                word = ''.join(ch for ch in word_maybe_punctuation if ch not in exclude)
+                print word
+
+                if word not in dictionary:
+                    blob = textblob_de.TextBlobDE(word, parser=textblob_de.PatternParser(pprint=True, lemmata=True))
+                    try: 
+                        translation = str(blob.translate(from_lang="de", to="en"))
+                        dictionary[w] = translation
+                    except textblob.exceptions.NotTranslated:
+                        pass
+
+        json_dictionary = json.dumps(dictionary)
+
+        return Dictionary(message=json_dictionary)
 
     DEFINE_RESOURCE = endpoints.ResourceContainer(Definition)
     @endpoints.method(DEFINE_RESOURCE, Definition, path='gearapi/define',http_method='POST',name='gearapi.define')
