@@ -27,11 +27,18 @@ from protorpc import message_types
 from protorpc import remote
 
 from google.appengine.ext import vendor
+
 vendor.add('lib')
 vendor.add('lib/nltk')
 
 import textblob_de
 import email_util
+
+# TODO
+# add article directory here as well
+# articles must match up with articles in front-end app
+# vendor.add('articles')
+
 
 package = 'GearBackend'
 
@@ -49,6 +56,12 @@ class StoriesCollection(messages.Message):
 
 class JsonData(messages.Message):
     """A JSON string containing data to save via email"""
+    message = messages.StringField(1)
+
+
+## TODO
+class Dictionary(messages.Message):
+    """A JSON string containing a dictionary of words for the articles"""
     message = messages.StringField(1)
 
 
@@ -74,11 +87,19 @@ class GearApi(remote.Service):
     def stories_list(self, unused_request):
         return STORED_STORIES
 
+    @endpoints.method(message_types.VoidMessage, Dictionary, path='dictionary', http_method='GET', name='stories.getDictionary')
+    def get_dictionary(self, unused_request):
+        # TODO
+        dictionary_json_string = "{'hallo': 'hello'}"
+        return Dictionary(message=dictionary_json_string)
+
     DEFINE_RESOURCE = endpoints.ResourceContainer(Definition)
     @endpoints.method(DEFINE_RESOURCE, Definition, path='gearapi/define',http_method='POST',name='gearapi.define')
     def define(self,request):
-        responseBlob = textblob_de.TextBlobDE(request.message)
-        responseText = str(responseBlob.translate(to="en"))
+        responseBlob = textblob_de.TextBlobDE(request.message, 
+            parser=textblob_de.PatternParser(pprint=True, lemmata=True))
+        responseText = str(responseBlob.translate(from_lang="de", to="en"))
+        responseText += "++" + str(responseBlob.words.lemmatize()[0])
         # email_util.email_data(responseText)
         return Definition(message=responseText)
 
@@ -92,6 +113,7 @@ class GearApi(remote.Service):
         # do we want to make this return a status of the email instead,
         # e.g. "Successful email transmission" upon success?
         return JsonData(message=json_string)
+
 
 
 
