@@ -39,6 +39,10 @@ import textblob_de
 import email_util
 
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 # TODO
 # add article directory here as well
 # articles must match up with articles in front-end app
@@ -104,16 +108,19 @@ class GearApi(remote.Service):
 
         dictionary = {}
         with open('articles/' + article_name, 'r') as f:
-            text = f.read().decode('utf-8')
-            for word_maybe_punctuation in text.split()[0:10]:
+            text = f.read().encode('utf-8')
+            for word_maybe_punctuation in text.split()[0:5]:
                 exclude = set(string.punctuation)
                 word = ''.join(ch for ch in word_maybe_punctuation if ch not in exclude)
-                print word
+                
 
                 if word not in dictionary:
+                    print 'word not in dictionary: ', word    
                     blob = textblob_de.TextBlobDE(word, parser=textblob_de.PatternParser(pprint=True, lemmata=True))
                     try: 
+                        print 'tried translating'
                         translation = str(blob.translate(from_lang="de", to="en"))
+                        print 'translation is ', translation
                         dictionary[w] = translation
                     except textblob.exceptions.NotTranslated:
                         pass
