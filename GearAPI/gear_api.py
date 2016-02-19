@@ -22,6 +22,8 @@ In the command prompt:
 """
 import json
 import string
+import cPickle as pickle
+
 
 import endpoints
 from protorpc import messages
@@ -132,11 +134,17 @@ class GearApi(remote.Service):
     DEFINE_RESOURCE = endpoints.ResourceContainer(Definition)
     @endpoints.method(DEFINE_RESOURCE, Definition, path='gearapi/define',http_method='POST',name='gearapi.define')
     def define(self,request):
-        responseBlob = textblob_de.TextBlobDE(request.message, 
-            parser=textblob_de.PatternParser(pprint=True, lemmata=True))
-        responseText = str(responseBlob.translate(from_lang="de", to="en"))
-        responseText += "++" + str(responseBlob.words.lemmatize()[0])
-        # email_util.email_data(responseText)
+        # Old translation mechanism -- used TextBlob & Google Translate -- no longer words
+        # responseBlob = textblob_de.TextBlobDE(request.message, 
+            # parser=textblob_de.PatternParser(pprint=True, lemmata=True))
+        # responseText = str(responseBlob.translate(from_lang="de", to="en"))
+        # responseText += "++" + str(responseBlob.words.lemmatize()[0])
+
+        # New method uses file german_english.txt that is preprocessed
+        # by dictionary.py to create the file dictionary.p
+        dictionary = pickle.load(open("dictionary.p", "rb"))        
+        responseText = dictionary.get(request.message, "No translation available")
+
         return Definition(message=responseText)
 
     JSONDATA_RESOURCE = endpoints.ResourceContainer(JsonData)
